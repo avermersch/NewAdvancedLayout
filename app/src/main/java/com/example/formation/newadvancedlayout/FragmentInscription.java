@@ -44,6 +44,9 @@ public class FragmentInscription extends Fragment {
                 String userName = userNameEditText.getText().toString();
                 //Récupération de l'entité utilisateur et modification du nom de l'utilisateur
                 parentActivity.getUser().setUserName(userName);
+
+                //Navigation vers le fragment B en passant par l'activité parente
+                parentActivity.goToFragmentB();
             }
         });
 

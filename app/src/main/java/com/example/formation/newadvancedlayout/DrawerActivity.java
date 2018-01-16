@@ -84,7 +84,7 @@ public class DrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
             navigateToFragment(new FragmentInscription());
         } else if (id == R.id.nav_slideshow) {
-
+            navigateToFragment(new RandomUserFragment());
         } else if (id == R.id.nav_manage) {
         }
 
@@ -105,5 +105,10 @@ public class DrawerActivity extends AppCompatActivity
     //Méthode permettant d'accéder à l'utilisateur
     public User getUser(){
         return this.user;
+    }
+
+    //Naviguer vers le fragment B
+    public void goToFragmentB(){
+        navigateToFragment(new FragmentB());
     }
 }
