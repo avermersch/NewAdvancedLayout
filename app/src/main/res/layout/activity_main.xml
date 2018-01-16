@@ -9,16 +9,16 @@
 
     <Button
         android:id="@+id/button11"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ajouter fragment"
         android:onClick="onAddFragment"/>
 
     <Button
         android:id="@+id/button12"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remplacer fragment"
+        android:text="Remplacer le fragment"
         android:onClick="onReplaceFragment"/>
 
     <fragment
@@ -29,9 +29,8 @@
 
     <fragment
         android:id="@+id/fragment2"
-        android:name="com.example.formation.newadvancedlayout.FragmentB"
+        android:name="com.example.formation.newadvancedlayout.TestFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 
 </LinearLayout>
