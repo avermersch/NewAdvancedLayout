@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -14,7 +15,8 @@ import android.widget.Button;
  */
 public class FragmentInscription extends Fragment {
 
-    private Fragment myself = this;
+    DrawerActivity parentActivity;
+    EditText userNameEditText;
 
     public FragmentInscription() {
         // Required empty public constructor
@@ -27,17 +29,24 @@ public class FragmentInscription extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_fragment_inscription, container, false);
 
-        Button btValid = view.findViewById(R.id.btValidInscription);
+        //Récupération d'une référence au champ du formulaire
+        userNameEditText = view.findViewById(R.id.editTextUserName);
 
-        btValid.setOnClickListener(new View.OnClickListener()
-        {
+        //Récupération d'une référence à l'acivité
+        parentActivity = (DrawerActivity)getActivity();
+
+        //Gestion du clic sur le bouton valider
+        Button btValid = view.findViewById(R.id.btValidInscription);
+        btValid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity()
-                        .getFragmentManager()
-                        .beginTransaction().remove(myself).commit();
+                //Récupération de la saisie de l'utilisateur
+                String userName = userNameEditText.getText().toString();
+                //Récupération de l'entité utilisateur et modification du nom de l'utilisateur
+                parentActivity.getUser().setUserName(userName);
             }
         });
 
-        return view;    }
+        return view;
+    }
 }
