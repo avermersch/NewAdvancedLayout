@@ -54,4 +54,9 @@ public class RandomUser {
         this.longitude = longitude;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }
