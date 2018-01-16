@@ -13,7 +13,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.formation.newadvancedlayout.model.RandomUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 
@@ -22,11 +29,11 @@ import java.util.Queue;
  */
 public class RandomUserFragment extends Fragment {
 
+   private List<RandomUser> userList;
 
     public RandomUserFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,4 +70,37 @@ public class RandomUserFragment extends Fragment {
                 .add(request);
     }
 
+    //Conversion d'une réponse JSON(chaine de caractère)
+    //en une liste RandomUser
+    private List<RandomUser> responseToList(String response){
+        List<RandomUser> list = new ArrayList<>();
+
+        try {
+            JSONArray jsonUsers = new JSONArray(response);
+            JSONObject item;
+            for(int i = 0; i < jsonUsers.length(); i++){
+                item = (JSONObject) jsonUsers.get(i);
+
+                //Création d'un nouvel utilisateur
+                RandomUser user = new RandomUser();
+
+                //Hydratation de l'utilisateur
+                user.setName(item.getString("name"));
+                user.setEmail(item.getString("email"));
+
+                JSONObject geo = item.getJSONObject("geo");
+
+                user.setLatitude(geo.getDouble("lat"));
+                user.setLongitude(geo.getDouble("lng"));
+
+                //Ajout de l'utilisateur à la liste
+                list.add(user);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }
