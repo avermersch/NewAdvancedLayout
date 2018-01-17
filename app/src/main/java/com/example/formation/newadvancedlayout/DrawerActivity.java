@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,10 +15,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.formation.newadvancedlayout.model.User;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.api.Auth;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +32,15 @@ public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private User user;
-    public final int LOGIN_REQUESTCODE = 1;
+    public final int LOGIN_REQUEST_CODE = 1;
+
+    private TextView userNameTextView;
+    private TextView userEmailTextView;
+
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+
+    private FirebaseUser fbUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +49,20 @@ public class DrawerActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Référence au textView dans l'en-tête de navigation
+        View headerView = ((NavigationView)navigationView.findViewById(R.id.nav_view))
+                .getHeaderView(0);
+        userNameTextView = headerView.findViewById(R.id.headerUserName);
+        userEmailTextView = headerView.findViewById(R.id.headerUserEmail);
 
         //Instanciation de l'utilisateur
         this.user = new User();
@@ -136,7 +156,37 @@ public class DrawerActivity extends AppCompatActivity
                     .createSignInIntentBuilder()
                     .setAvailableProviders(providers)
                     .build(),
-                LOGIN_REQUESTCODE
+                LOGIN_REQUEST_CODE
         );
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if(requestCode == LOGIN_REQUEST_CODE){
+           //Récupération de la réponse
+           IdpResponse response = IdpResponse.fromResultIntent(data);
+
+           if(resultCode == RESULT_OK){
+               //Récupération de l'utilisateur connecté
+               fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+               //Affichage des infos utilisateur
+               if(fbUser != null){
+                   String userName = fbUser.getDisplayName();
+                   String userEmail = fbUser.getEmail();
+                   userNameTextView.setText(userName);
+                   userEmailTextView.setText(userEmail);
+               }
+
+               //Masquage du lien login
+               navigationView.getMenu().findItem(R.id.action_login).setVisible(false);
+
+           } else{
+               Log.d("Main","Erreur Fireauth code : " + response.getErrorCode());
+               Toast.makeText(this,
+                       "Impossible de vous authentifier",
+                       Toast.LENGTH_SHORT).show();
+           }
+       }
     }
 }
