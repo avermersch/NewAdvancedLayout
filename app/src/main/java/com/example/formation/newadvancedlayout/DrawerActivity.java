@@ -16,11 +16,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.formation.newadvancedlayout.model.User;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.auth.api.Auth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private User user;
+    public final int LOGIN_REQUESTCODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,5 +119,24 @@ public class DrawerActivity extends AppCompatActivity
     //Naviguer vers le fragment B
     public void goToFragmentB(){
         navigateToFragment(new FragmentB());
+    }
+
+    //Lancement de la procédure d'authentification
+    public void onLogin(MenuItem item) {
+        //Definition des fournisseurs d'authentification
+        List<AuthUI.IdpConfig> providers = new ArrayList<>();
+        providers.add(
+                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER)
+                        .build()
+        );
+
+        //Lancement de l'activité d'authentification
+        startActivityForResult(
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(providers)
+                    .build(),
+                LOGIN_REQUESTCODE
+        );
     }
 }
