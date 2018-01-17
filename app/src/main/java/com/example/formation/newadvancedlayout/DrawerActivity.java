@@ -188,7 +188,9 @@ public class DrawerActivity extends AppCompatActivity
 
 
            } else{
-               Log.d("Main","Erreur Fireauth code : " + response.getErrorCode());
+               if(response != null){
+                   Log.d("Main","Erreur Fireauth code : " + response.getErrorCode());
+               }
                Toast.makeText(this,
                        "Impossible de vous authentifier",
                        Toast.LENGTH_SHORT).show();
@@ -209,6 +211,11 @@ public class DrawerActivity extends AppCompatActivity
                         //Suppression des infos utilisateur dans l'en-tête
                         userNameTextView.setText("");
                         userEmailTextView.setText("");
+
+                        fbUser = null;
+
+                        //Fermeture du menu
+                        drawer.closeDrawer(GravityCompat.START);
                     }
                 }
         );
