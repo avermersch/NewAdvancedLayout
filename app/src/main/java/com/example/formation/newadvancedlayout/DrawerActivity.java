@@ -3,6 +3,7 @@ package com.example.formation.newadvancedlayout;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -22,6 +23,8 @@ import com.example.formation.newadvancedlayout.model.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -180,6 +183,9 @@ public class DrawerActivity extends AppCompatActivity
 
                //Masquage du lien login
                navigationView.getMenu().findItem(R.id.action_login).setVisible(false);
+               //Affichage du lien logout
+               navigationView.getMenu().findItem(R.id.action_logout).setVisible(true);
+
 
            } else{
                Log.d("Main","Erreur Fireauth code : " + response.getErrorCode());
@@ -188,5 +194,23 @@ public class DrawerActivity extends AppCompatActivity
                        Toast.LENGTH_SHORT).show();
            }
        }
+    }
+
+    public void onLogout(MenuItem item) {
+        AuthUI.getInstance().signOut(this).addOnCompleteListener(
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        //Affichage du lien login
+                        navigationView.getMenu().findItem(R.id.action_login).setVisible(true);
+                        //Masquage du lien logout
+                        navigationView.getMenu().findItem(R.id.action_logout).setVisible(false);
+
+                        //Suppression des infos utilisateur dans l'en-tête
+                        userNameTextView.setText("");
+                        userEmailTextView.setText("");
+                    }
+                }
+        );
     }
 }
